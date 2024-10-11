@@ -1,23 +1,21 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
 
 from .database import Base
 
-class User(Base):
-    __tablename__ = "users"
+class Customer(Base):
+    __tablename__ = "customers"
     id = Column(Integer,primary_key=True,index=True)
     name = Column(String(255),index=True)
     email = Column(String(255), unique=True, index=True)
-    todos = relationship("Todo",back_populates="owner")
+    pin = Column(Integer, index=True)
+    accounts = relationship("Account",back_populates="owner")
     is_active = Column(Boolean,default=False)
 
-
-
-class Todo(Base):
-    __tablename__ = "todos"
+class Account(Base):
+    __tablename__ = "accounts"
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), index=True)
-    description = Column(String(255), index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    balance = Column(Float)
+    owner_id = Column(Integer, ForeignKey("customers.id"))
 
-    owner = relationship("User",back_populates="todos")
+    owner = relationship("Customer",back_populates="accounts")

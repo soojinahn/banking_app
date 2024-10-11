@@ -16,20 +16,19 @@ def get_db():
     finally:
         db.close()
 
-
-@app.post("/users/",response_model=schemas.User)
-def post_user(user:schemas.UserCreate, db:Session=Depends(get_db)):
+@app.post("/users/",response_model=schemas.Customer)
+def post_user(user:schemas.CustomerCreate, db:Session=Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db,user=user)
 
-@app.get("/users/", response_model=list[schemas.User])
-def get_users(skip:int=0, limit:int=0, db:Session=Depends(get_db)):
+@app.get("/users/", response_model=list[schemas.Customer])
+def get_users(skip:int=0, limit:int=5, db:Session=Depends(get_db)):
     users = crud.get_users(db,skip=skip,limit=limit)
     return users
 
-@app.get("/users/{user_id}/",response_model=schemas.User)
+@app.get("/users/{user_id}/",response_model=schemas.Customer)
 def get_user(user_id:int, db:Session=Depends(get_db)):
     db_user = crud.get_user(db,user_id =user_id )
     if db_user is None:
@@ -37,12 +36,12 @@ def get_user(user_id:int, db:Session=Depends(get_db)):
     return db_user
 
 
-@app.post("/users/{user_id}/todos/",response_model=schemas.Todo)
-def post_todo_for_user(user_id:int, todo:schemas.TodoCreate, db:Session=Depends(get_db)):
-    return crud.create_user_todo(db=db,user_id=user_id, todo=todo)
+@app.post("/users/{user_id}/accounts/",response_model=schemas.Account)
+def post_account_for_user(user_id:int, account:schemas.AccountCreate, db:Session=Depends(get_db)):
+    return crud.create_user_account(db=db,user_id=user_id, account=account)
 
 
-@app.get("/todos/", response_model=list[schemas.Todo])
-def get_todos(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
-    todos = crud.get_todos(db,skip=skip,limit=limit)
+@app.get("/accounts/", response_model=list[schemas.Account])
+def get_accounts(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
+    todos = crud.get_accounts(db,skip=skip,limit=limit)
     return todos

@@ -1,15 +1,13 @@
 from pydantic import BaseModel
 
-class TodoBase(BaseModel):
-    title : str
-    description : str | None = None
+class AccountBase(BaseModel):
+    balance : float
 
-
-class TodoCreate(TodoBase):
+class AccountCreate(AccountBase):
     pass
 
 
-class Todo(TodoBase):
+class Account(AccountBase):
     id : int
     owner_id  : int
 
@@ -17,19 +15,20 @@ class Todo(TodoBase):
         from_attributes = True
 
 
-class UserBase(BaseModel):
+class CustomerBase(BaseModel):
     email: str
     name: str
+    pin: int
 
 
-class UserCreate(UserBase):
+class CustomerCreate(CustomerBase):
     pass 
 
 
-class User(UserBase):
+class Customer(CustomerBase):
     id : int
     is_active : bool
-    todos : list[Todo] = []
+    account : list[Account] = []
 
     class Config:
         orm_model = True
