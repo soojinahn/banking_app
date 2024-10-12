@@ -18,7 +18,7 @@ class Account(AccountBase):
 class CustomerBase(BaseModel):
     email: str
     name: str
-    pin: int
+    pin: str
 
 
 class CustomerCreate(CustomerBase):

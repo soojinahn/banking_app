@@ -41,7 +41,16 @@ def post_account_for_user(user_id:int, account:schemas.AccountCreate, db:Session
     return crud.create_user_account(db=db,user_id=user_id, account=account)
 
 
+@app.get("/users/{user_id}/accounts/", response_model=list[schemas.Account])
+def get_user_accounts(user_id:int,db:Session=Depends(get_db)):
+    customer = crud.get_user(db,user_id=user_id)
+    if customer is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return customer.accounts
+
 @app.get("/accounts/", response_model=list[schemas.Account])
 def get_accounts(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
     todos = crud.get_accounts(db,skip=skip,limit=limit)
     return todos
+
+
