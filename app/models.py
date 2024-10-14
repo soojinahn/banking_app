@@ -10,8 +10,7 @@ class Customer(Base):
     email = Column(String(255), unique=True, index=True)
     pin = Column(String(10), index=True)
     accounts = relationship("Account",back_populates="owner")
-    is_active = Column(Boolean,default=False)
-
+    
 class Account(Base):
     __tablename__ = "accounts"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)

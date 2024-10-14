@@ -27,7 +27,6 @@ class CustomerCreate(CustomerBase):
 
 class Customer(CustomerBase):
     id : int
-    is_active : bool
     account : list[Account] = []
 
     class Config:

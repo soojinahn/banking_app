@@ -43,14 +43,21 @@ def post_account_for_customer(customer_id:int, account:schemas.AccountCreate, db
 
 @app.get("/customers/{customer_id}/accounts/", response_model=list[schemas.Account])
 def get_customer_accounts(customer_id:int,db:Session=Depends(get_db)):
-    customer = crud.get_customer(db,customer_id=customer_id)
-    if customer is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return customer.accounts
+    accounts = crud.get_accounts_by_customer_id(db,customer_id=customer_id)
+    if accounts is None:
+        raise HTTPException(status_code=404, detail="No account under this customer")
+    return accounts
+
 
 @app.get("/accounts/", response_model=list[schemas.Account])
-def get_accounts(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
+def get_all_accounts(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
     accounts = crud.get_accounts(db,skip=skip,limit=limit)
     return accounts
 
 
+@app.put("/customers/{customer_id}/accounts/{account_id}", response_model=schemas.Account)
+def update_customer_account(balance:float, customer_id:int, account_id:int, db:Session=Depends(get_db)):
+    account = crud.update_account_by_customer_id(db=db,customer_id=customer_id, account_id=account_id, balance=balance)
+    if account is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
