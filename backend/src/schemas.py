@@ -11,7 +11,7 @@ class Account(AccountBase):
     id : int
     owner_id  : int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -27,8 +27,8 @@ class CustomerCreate(CustomerBase):
 
 class Customer(CustomerBase):
     id : int
-    account : list[Account] = []
+    accounts : list[Account] = []
 
-    class Config:
+    class ConfigDict:
         orm_model = True
 
