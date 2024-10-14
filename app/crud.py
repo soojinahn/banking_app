@@ -42,14 +42,13 @@ def get_accounts_by_customer_id(db:Session, customer_id:int):
     customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
     return customer.accounts
 
-def update_account_by_customer_id(db: Session, customer_id:int, account_id: int, balance: float):
-    account = db.query(models.Account).filter(models.Account.owner_id == customer_id, models.Account.id == account_id).first()
-    if account:
-        print("Account retrieval successful.")
+
+def get_account_by_ids(db:Session, customer_id:int, account_id:int):
+    return db.query(models.Account).filter(models.Account.owner_id == customer_id, models.Account.id == account_id).first()
+
+
+def update_account_by_customer_id(db: Session, account:schemas.Account, balance:float):
     account.balance = balance
-    if account:
-        print(account.id, account.owner_id, account.balance)
     db.commit()
     db.refresh(account)
     return account
-
