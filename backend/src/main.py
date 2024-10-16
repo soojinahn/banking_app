@@ -1,12 +1,33 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from typing import Annotated
+from fastapi import FastAPI, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
 
 from . import crud,models, schemas
 from .database import SessionLocal, engine
+from fastapi.middleware.cors import CORSMiddleware
+
+import jwt
+from fastapi.encoders import jsonable_encoder
+
+SECERT_KEY = "YOUR_FAST_API_SECRET_KEY"
+ALGORITHM ="HS256"
+ACCESS_TOKEN_EXPIRES_MINUTES = 800
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = {
+    'http://localhost:3000',
+}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #Dependency
 def get_db():
@@ -15,6 +36,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.post("/login", status_code=status.HTTP_200_OK)
+async def user_login(email: Annotated[str, Form()], pin: Annotated[str, Form()], db:Session=Depends(get_db)):
+
+    #if data['username']== test_user['username'] and data['password']== test_user['password']:
+    customer = crud.get_customer_by_email(db, email)
+    if customer and customer.pin == pin:
+        encoded_jwt = jwt.encode({'email': email, 'pin': pin}, SECERT_KEY, algorithm=ALGORITHM)
+        return {"token": encoded_jwt}
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials")
 
 # to add a new customer
 @app.post("/customers/",status_code=status.HTTP_201_CREATED, response_model=schemas.Customer)
@@ -52,7 +84,6 @@ def get_customer_accounts(customer_id:int,db:Session=Depends(get_db)):
     if accounts is None:
         raise HTTPException(status_code=404, detail="No account under this customer")
     return accounts
-
 
 # to fetch specific account under a customer
 @app.get("/customers/{customer_id}/accounts/{account_id}", status_code=status.HTTP_200_OK, response_model=schemas.Account)

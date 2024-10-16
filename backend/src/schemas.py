@@ -31,4 +31,3 @@ class Customer(CustomerBase):
 
     class ConfigDict:
         orm_model = True
-
