@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import 'bulma/css/bulma.min.css';
 
 export default function Login({ setToken, setName }) {
     const [email, setEmail] = useState("");
@@ -65,25 +66,49 @@ export default function Login({ setToken, setName }) {
       }, [navigate, isLoggedIn]);
 
     return(
-            <div className='login-wrapper'>
-                <h2>Insert card not available. Please provide credentials</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        <p>Email</p>
-                        <input type="text" onChange={e => setEmail(e.target.value)}/>
-                    </label>
-                    <label>
-                        <p>PIN Number</p>
-                        <input type="password" onChange={e => setPIN(e.target.value)}/>
-                    </label>
-                    <div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? 'Logging in...' : 'Login'}
-                        </button>
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <div className='login'>
+           <section class="hero is-primary is-fullheight has-background-white">
+            <div class="hero-body">
+                <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                    <div class='login'>
+                        <form class="box" onSubmit={handleSubmit}>
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="email" placeholder="e.g. bobsmith@gmail.com" onChange={e => setEmail(e.target.value)} />
+                                <span class="icon is-small is-left">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">PIN</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="password" placeholder="****" onChange={e => setPIN(e.target.value)}/>
+                            <span class="icon is-small is-left">
+                            <i class="fa fa-lock"></i>
+                            </span>  
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-link" disabled={loading} type="submit">Submit</button>
+                            </div>
+                        </div>
+                        </form>
+                        
+
                     </div>
-                </form>
+                    </div>
+                </div>
+                </div>
             </div>
+            </section>
+        </div>
         );
   }
 

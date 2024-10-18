@@ -4,6 +4,9 @@ import Login from './components/Login.js';
 import AccountsPage from './components/Accounts.js';
 import { useState, useEffect } from 'react';
 
+import 'bulma/css/bulma.min.css';
+import "./index.css";
+
 function App() {
   const [token, setToken] = useState("");
 
@@ -16,8 +19,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-
-  
 }
 
 export default App;
