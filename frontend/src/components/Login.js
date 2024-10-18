@@ -61,9 +61,9 @@ export default function Login({ setToken, setName }) {
 
     useEffect(() => {
         if (isLoggedIn) {
-          navigate("/accounts/" + id);
+            navigate("/accounts/" + id);
         }
-      }, [navigate, isLoggedIn]);
+      }, [isLoggedIn]);
 
     return(
         <div className='login'>
@@ -72,7 +72,10 @@ export default function Login({ setToken, setName }) {
                 <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+
+
                     <div class='login'>
+
                         <form class="box" onSubmit={handleSubmit}>
                         <div class="field">
                             <label class="label">Email</label>
@@ -100,9 +103,8 @@ export default function Login({ setToken, setName }) {
                             </div>
                         </div>
                         </form>
-                        
-
                     </div>
+
                     </div>
                 </div>
                 </div>
