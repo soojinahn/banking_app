@@ -44,7 +44,7 @@ async def user_login(email: Annotated[str, Form()], pin: Annotated[str, Form()],
     customer = crud.get_customer_by_email(db, email)
     if customer and customer.pin == pin:
         encoded_jwt = jwt.encode({'email': email, 'pin': pin}, SECERT_KEY, algorithm=ALGORITHM)
-        return {"token": encoded_jwt}
+        return {"token": encoded_jwt, "name": customer.name, 'id': customer.id}
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials")
 

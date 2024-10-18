@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-export default function Login({ setToken }) {
+export default function Login({ setToken, setName }) {
     const [email, setEmail] = useState("");
     const [PIN, setPIN] = useState("");
+    const [id, setId] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isLoggedIn, setLogIn] = useState(false);
+
+    const navigate = useNavigate();
 
     const validateForm = () => {
         if (!email || !PIN) {
@@ -41,6 +46,8 @@ export default function Login({ setToken }) {
             console.log(data.token, "this is from data.token");
             localStorage.setItem('token', data.token);
             setToken(data.token);
+            setId(data.id);
+            setLogIn(true);
         } else{
             const errorData = await response.json();
             setError(errorData.detail || "Authentication failed");
@@ -50,6 +57,12 @@ export default function Login({ setToken }) {
             setError("An error occured. Please try again later");
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+          navigate("/accounts/" + id);
+        }
+      }, [navigate, isLoggedIn]);
 
     return(
             <div className='login-wrapper'>
@@ -75,5 +88,5 @@ export default function Login({ setToken }) {
   }
 
 Login.propTypes = {
-    setToken: propTypes.func.isRequired
+    setToken: propTypes.func.isRequired,
 }
