@@ -27,7 +27,17 @@ export default function CheckBalance() {
 
     return(
         <div>
-            <h2>{accountBal}</h2>
+            <section class="hero is-primary is-fullheight has-background-white">
+                <div class="hero-body">
+                    <div class="container is-centered">
+                    <div class="columns is-centered"></div>
+                        <div class="content">
+                            <p class="subtitle is-5">Account {accountId}</p>
+                            <p class="title is-3">Balance {accountBal}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     )
 

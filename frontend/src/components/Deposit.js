@@ -65,7 +65,7 @@ export default function Deposit() {
             })
             if(response.ok) {
                 const data = await response.json();
-                console.log("New balance: ", data.balance);
+                setAccountBalance(data.balance);
             } else {
                 const errorData = await response.json();
                 setError(errorData.detail || "Something went wrong.");
@@ -87,8 +87,28 @@ export default function Deposit() {
 
     return(
         <div>
-            <input class="input" type="number" placeholder="Input amount" onChange={e => setDepositAmount(e.target.value)}/>
-            <button class="button is-link" onClick={handleSubmit}>Submit</button>
+            <section class="hero is-primary is-fullheight has-background-white">
+                <div class="hero-body">
+                    <div class="container">
+                    <div class="columns is-centered"></div>
+                    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+                        <div class="content">
+                            <p class="subtitle is-5">Current balance: {accountBalance}</p>
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Input amount" onChange={e => setDepositAmount(e.target.value)} />
+                                </div>
+                                <div class="control">
+                                    <button class="button is-link" onClick={handleSubmit}>
+                                    Deposit
+                                    </button>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
         </div>
     )
 

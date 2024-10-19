@@ -12,16 +12,28 @@ export default function ActionsPage() {
     useEffect(() => {
         if (selectAction){
             let url = selectAction.replace(' ','').toLowerCase(); // Format action string for url
-            navigate(curr_URL + url)
+            navigate(curr_URL + '/' + url)
         }
-      }, [navigate, selectAction]);
+      }, [selectAction]);
     
       return(
         <div>
-            <h1>Customer: {customerId} Account:{accountId}</h1>
-            {actions.map((action) => 
-                <button class="button" onClick={() => setAction(action)}>{action}</button>
-            )}
+            <section class="hero is-primary is-fullheight has-background-white">
+            <div class="hero-body">
+                <div class="container is-centered">
+                <div class="columns is-centered"></div>
+                    <div class="content">
+                        <p class="title is-3">Account {accountId} actions:</p>
+                        <div class="buttons">
+                        {actions.map((action) => 
+                            <button class="button" onClick={() => setAction(action)}>{action}</button>
+                        )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </section>
+
         </div>
     )
 }

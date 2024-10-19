@@ -39,10 +39,22 @@ export default function AccountsPage() {
 
     return(
         <div>
-            <h2>Welcome, {name}</h2>
-            {accounts.map((account) => (
-                <button class="button" onClick={() => setAccountId(account.id)}>Account: {account.id}</button>
-            ))}
+            <section class="hero is-primary is-fullheight has-background-white">
+            <div class="hero-body">
+                <div class="container content">
+                <div class="columns is-centered"></div>
+                    <div class="column is-half">
+                        <p class="subtitle is-5">Welcome, {name}</p>
+                        <p class="title is-3">Please select an account</p>
+                        <div class="buttons">
+                            {accounts.map((account) => (
+                                <button class="button" onClick={() => setAccountId(account.id)}>Account: {account.id}</button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </section>
         </div>
     );
 }
