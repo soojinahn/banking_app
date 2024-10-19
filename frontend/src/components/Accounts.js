@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
-const AccountsContext = React.createContext({
-    accounts: [], fetchAccounts: () => {}
-})
-
 export default function AccountsPage() {
     const { customerId } = useParams();
     const [error, setError] = useState("");
@@ -44,11 +40,9 @@ export default function AccountsPage() {
     return(
         <div>
             <h2>Welcome, {name}</h2>
-            <AccountsContext.Provider value={{accounts, fetchAccounts}}>
-                {accounts.map((account) => (
-                    <button class="button" onClick={() => setAccountId(account.id)}>Account: {account.id}</button>
-                ))}
-            </AccountsContext.Provider>
+            {accounts.map((account) => (
+                <button class="button" onClick={() => setAccountId(account.id)}>Account: {account.id}</button>
+            ))}
         </div>
     );
 }

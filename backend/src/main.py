@@ -103,9 +103,9 @@ def get_all_accounts(skip:int=0,limit:int=100,db:Session=Depends(get_db)):
 
 # to update a specific account under a customer
 @app.put("/customers/{customer_id}/accounts/{account_id}", status_code=status.HTTP_200_OK, response_model=schemas.Account)
-def update_customer_account(customer_id:int, account_id:int, balance:float, db:Session=Depends(get_db)):
+def update_customer_account(customer_id:int, account_id:int, body: dict, db:Session=Depends(get_db)):
     existing_account = crud.get_account_by_ids(db,customer_id==customer_id, account_id=account_id)
     if existing_account is None:
         raise HTTPException(status_code=404, detail="Account not found.")
-    updated_account = crud.update_account_by_customer_id(db, account=existing_account, balance=balance)
+    updated_account = crud.update_account_by_customer_id(db, account=existing_account, balance=body["balance"])
     return updated_account
