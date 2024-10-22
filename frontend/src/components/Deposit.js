@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function Deposit() {
     const { customerId, accountId } = useParams();
@@ -8,6 +8,8 @@ export default function Deposit() {
     const [depositAmount, setDepositAmount] = useState(0);
     const [isLoaded, setLoaded] = useState(false);
     
+    const navigate = useNavigate();
+
     const validateAmount = () => {
         if (depositAmount <= 0) {
             setError("Please input a valid amount");
@@ -77,7 +79,7 @@ export default function Deposit() {
 
     useEffect(() => {
         fetchAccount();
-      }, []);
+      }, [accountId]);
 
       useEffect(() => {
         if(isLoaded) {
@@ -103,11 +105,21 @@ export default function Deposit() {
                                     Deposit
                                     </button>
                                 </div>
-                                </div>
+                            </div>
                         </div>
+                        <button class="button is-link mb-3" onClick={() => navigate(-1)}>Go Back</button>
                     </div>
                     </div>
                 </div>
+
+                {error && 
+                    <article class="message is-small is-warning">
+                    <div class="message-header">
+                        {error}
+                        <button class="delete is-small" aria-label="delete"></button>
+                    </div>
+                    </article>
+                }
             </section>
         </div>
     )

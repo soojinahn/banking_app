@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function CheckBalance() {
     const { customerId, accountId } = useParams();
     const [error, setError] = useState("");
     const [accountBal, setAccountBal] = useState(-1);
     
+    const navigate = useNavigate();
+
     const fetchAccount = async () => {
         try {
             const response = await fetch(`http://localhost:8000/customers/${customerId}/accounts/${accountId}`)
@@ -35,8 +37,18 @@ export default function CheckBalance() {
                             <p class="subtitle is-5">Account {accountId}</p>
                             <p class="title is-3">Balance {accountBal}</p>
                         </div>
+                        <button class="button is-link" onClick={() => navigate(-1)}>Go Back</button>
                     </div>
                 </div>
+
+                {error && 
+                    <article class="message is-small is-warning">
+                    <div class="message-header">
+                        {error}
+                        <button class="delete is-small" aria-label="delete"></button>
+                    </div>
+                    </article>
+                }
             </section>
         </div>
     )

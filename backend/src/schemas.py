@@ -3,6 +3,7 @@ from pydantic import BaseModel
 class AccountBase(BaseModel):
     balance : float
 
+
 class AccountCreate(AccountBase):
     pass
 
@@ -31,3 +32,8 @@ class Customer(CustomerBase):
 
     class ConfigDict:
         orm_model = True
+
+
+class LoginBase(BaseModel):
+    email: str
+    pin: str

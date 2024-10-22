@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 export default function ActionsPage() {
-    const { customerId, accountId } = useParams();
+    const { accountId } = useParams();
     const actions = ["Check Balance", "Deposit", "Withdraw"];
     const [selectAction, setAction] = useState("");
     
@@ -11,7 +11,7 @@ export default function ActionsPage() {
 
     useEffect(() => {
         if (selectAction){
-            let url = selectAction.replace(' ','').toLowerCase(); // Format action string for url
+            const url = selectAction.replace(' ','').toLowerCase(); // Format action string for url
             navigate(curr_URL + '/' + url)
         }
       }, [selectAction]);
@@ -30,6 +30,7 @@ export default function ActionsPage() {
                         )}
                         </div>
                     </div>
+                    <button class="button is-link" onClick={() => navigate(-1)}>Go Back</button>
                 </div>
             </div>
             </section>

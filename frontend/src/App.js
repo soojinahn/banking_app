@@ -1,4 +1,3 @@
-import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './components/Login.js';
 import AccountsPage from './components/Accounts';
@@ -7,10 +6,8 @@ import CheckBalance from './components/CheckBalance';
 import Deposit from './components/Deposit';
 import Withdraw from './components/Withdraw';
 
-import { useState, useEffect } from 'react';
-
+import { useState } from 'react';
 import 'bulma/css/bulma.min.css';
-import "./index.css";
 
 export default function App() {
   const [token, setToken] = useState("");

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import 'bulma/css/bulma.min.css';
 
-export default function Login({ setToken, setName }) {
+export default function Login({ setToken }) {
     const [email, setEmail] = useState("");
     const [PIN, setPIN] = useState("");
     const [id, setId] = useState("");
@@ -27,17 +26,13 @@ export default function Login({ setToken, setName }) {
         if (!validateForm()) return;
         setLoading(true);
 
-        const formDetails = new URLSearchParams();
-        formDetails.append('email', email);
-        formDetails.append('pin', PIN);
-
         try {
             const response = await fetch('http://localhost:8000/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: formDetails,
+                body: JSON.stringify({ email: email, pin: PIN })
         });
 
         setLoading(false);
@@ -51,6 +46,7 @@ export default function Login({ setToken, setName }) {
             setLogIn(true);
         } else{
             const errorData = await response.json();
+            setLoading(false);
             setError(errorData.detail || "Authentication failed");
         }
         } catch (error) {
@@ -72,8 +68,6 @@ export default function Login({ setToken, setName }) {
                 <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-
-
                     <div class='login'>
 
                         <form class="box" onSubmit={handleSubmit}>
@@ -96,6 +90,8 @@ export default function Login({ setToken, setName }) {
                             </span>  
                             </div>
                         </div>
+
+                        <p class="help is-danger p-1">{error}</p>
 
                         <div class="field is-grouped">
                             <div class="control">

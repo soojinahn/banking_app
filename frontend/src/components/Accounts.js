@@ -8,8 +8,8 @@ export default function AccountsPage() {
     const [accounts, setAccounts] = useState([]);
     const [accountId, setAccountId] = useState(0);
 
-    const curr_URL = useLocation().pathname;
     const navigate = useNavigate();
+    const curr_URL = useLocation().pathname;
 
     const fetchAccounts = async () => {
         try {
@@ -54,6 +54,14 @@ export default function AccountsPage() {
                     </div>
                 </div>
             </div>
+                {error && 
+                    <article class="message is-small is-warning">
+                    <div class="message-header">
+                        {error}
+                        <button class="delete is-small" aria-label="delete"></button>
+                    </div>
+                    </article>
+                }
             </section>
         </div>
     );

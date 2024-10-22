@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function Withdraw() {
     const { customerId, accountId } = useParams();
@@ -7,6 +7,8 @@ export default function Withdraw() {
     const [accountBalance, setAccountBalance] = useState(0);
     const [withdrawAmount, setWithdrawAmount] = useState(0);
     const [isLoaded, setLoaded] = useState(false);
+
+    const navigate = useNavigate();
     
     const validateAmount = () => {
         if (withdrawAmount > accountBalance) {
@@ -74,7 +76,7 @@ export default function Withdraw() {
 
     useEffect(() => {
         fetchAccount();
-      }, []);
+      }, [accountId]);
 
       useEffect(() => {
         if(isLoaded) {
@@ -102,9 +104,19 @@ export default function Withdraw() {
                                 </div>
                                 </div>
                         </div>
+                        <button class="button is-link" onClick={() => navigate(-1)}>Go Back</button>
                     </div>
                     </div>
                 </div>
+
+                {error && 
+                    <article class="message is-small is-warning">
+                    <div class="message-header">
+                        {error}
+                        <button class="delete is-small" aria-label="delete"></button>
+                    </div>
+                    </article>
+                }
             </section>
         </div>
     )
