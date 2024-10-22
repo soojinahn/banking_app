@@ -51,4 +51,4 @@ ATM처럼 작동하는 간단한 은행 애플리케이션입니다. 실제 은�
 
 ## App Demo 👾
 
-![Demo](https://github.com/user-attachments/assets/1d10fef9-e9a5-4711-8d46-63be3fbb7488)
+![Demo](https://github.com/soojinahn/banking_app/blob/main/frontend/src/assets/app_demo.mov)
