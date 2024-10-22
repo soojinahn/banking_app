@@ -1,5 +1,5 @@
 <div align="center">
-<img width="220" alt="atm" src="https://github.com/soojinahn/banking_app/tree/main/frontend/src/assets/atm.png">
+<img width="220" alt="atm" src="https://github.com/soojinahn/banking_app/blob/main/frontend/src/assets/atm.png">
 <br>
 <br>
 
@@ -43,7 +43,7 @@ ATM처럼 작동하는 간단한 은행 애플리케이션입니다. 실제 은�
 
 
 <div align="center">
-<img width="230" alt="database" src="https://github.com/soojinahn/banking_app/tree/main/frontend/src/assets/database.png">
+<img width="500" alt="database" src="https://github.com/soojinahn/banking_app/blob/main/frontend/src/assets/database.png">
 
 *Figure 1. ER Diagram for the project.*
 </div>
