@@ -8,7 +8,8 @@ class Customer(Base):
     id = Column(Integer,primary_key=True,index=True, autoincrement=True)
     name = Column(String(255),index=True)
     email = Column(String(255), unique=True, index=True)
-    pin = Column(String(10), index=True)
+    hashed_pin = Column(String(255))
+    
     accounts = relationship("Account",back_populates="owner")
     
 class Account(Base):

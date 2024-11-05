@@ -7,6 +7,7 @@ export default function AccountsPage() {
     const [name, setName] = useState("");
     const [accounts, setAccounts] = useState([]);
     const [accountId, setAccountId] = useState(0);
+    const [validToken, setValidToken] = useState(true);
 
     const navigate = useNavigate();
     const curr_URL = useLocation().pathname;
@@ -32,10 +33,32 @@ export default function AccountsPage() {
       }, [customerId]);
 
     useEffect(() => {
+        const verifyToken = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`http://localhost:8000/verify-token/${token}`);
+
+                console.log(response);
+                if(!response.ok) {
+                    throw new Error("Token verification failed");
+                }
+            } catch(error) {
+                localStorage.removeItem('token');
+                setValidToken(false);
+            }
+        };
+        verifyToken();
+        console.log("verified token");
+    }, [navigate]);
+
+    useEffect(() => {
         if (accountId){
             navigate(curr_URL + "/" + accountId)
         }
-      }, [accountId]);
+        if (!validToken){
+            navigate("/");
+        }
+      }, [accountId, validToken]);
 
     return(
         <div>

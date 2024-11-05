@@ -1,21 +1,35 @@
 from typing import Annotated
+from datetime import datetime, timedelta, timezone
+
+import jwt
 from fastapi import FastAPI, Depends, HTTPException, status, Form
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from jwt.exceptions import InvalidTokenError
 
 from . import crud,models, schemas
 from .database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
+from passlib.context import CryptContext
 
-import jwt
-from fastapi.encoders import jsonable_encoder
 
-SECERT_KEY = "YOUR_FAST_API_SECRET_KEY"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SECERT_KEY = os.getenv("SECRET_KEY")
 ALGORITHM ="HS256"
-ACCESS_TOKEN_EXPIRES_MINUTES = 800
+ACCESS_TOKEN_EXPIRES_MINUTES = 30
 
 models.Base.metadata.create_all(bind=engine)
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 app = FastAPI()
+
 
 origins = {
     'http://localhost:3000',
@@ -36,22 +50,65 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/login", status_code=status.HTTP_200_OK)
-async def login_customer(credentials:schemas.LoginBase, db:Session=Depends(get_db)):
-    customer = crud.get_customer_by_email(db, credentials.email)
-    if customer and customer.pin == credentials.pin:
-        encoded_jwt = jwt.encode({'email': credentials.email, 'pin': credentials.pin}, SECERT_KEY, algorithm=ALGORITHM)
-        return {"token": encoded_jwt, "name": customer.name, 'id': customer.id}
+def get_customer(email: str, db:Session=Depends(get_db)):
+    customer = crud.get_customer_by_email(db, email)
+    if customer:
+        return schemas.UserInDB(**customer.__dict__)
+
+def authenticate_customer(email:str, pin=str, db:Session=Depends(get_db)):
+    customer = crud.get_customer_by_email(db, email)
+    if not customer:
+        return False
+    if not pwd_context.verify(pin, customer.hashed_pin):
+        return False
+    return customer
+
+def create_access_token(data:dict, expires_delta:timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECERT_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt
+
+def verify_token(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
+    try:
+        payload = jwt.decode(token, SECERT_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        return payload
+    except:
+        raise credentials_exception
+    
+@app.get("/verify-token/{token}",status_code=status.HTTP_200_OK)
+async def verify_user_token(token: str):
+    verify_token(token=token)
+    return {"message": "Token is valid"}
+
+@app.post("/token", status_code=status.HTTP_200_OK)
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get_db)):
+    customer = authenticate_customer(form_data.username, form_data.password, db)
+    if not customer:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect credentials")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRES_MINUTES)
+    access_token = create_access_token(data={"sub":customer.email}, expires_delta=access_token_expires)
+    
+    return {"access_token": access_token, "token_type": "bearer", "customer_id": customer.id, "customer_name": customer.name}
 
 # add a new customer
 @app.post("/customers/",status_code=status.HTTP_201_CREATED, response_model=schemas.Customer)
 def post_customer(customer:schemas.CustomerCreate, db:Session=Depends(get_db)):
     db_user = crud.get_customer_by_email(db, email=customer.email)
     if db_user:
-        raise HTTPException(status_code=409, detail="Email already registered")
-    return crud.create_customer(db=db,customer=customer)
+        raise HTTPException(status_code=409, detail="Customer already registered")
+    hashed_password = pwd_context.hash(customer.pin)
+    db_user = schemas.CustomerCreate(email=customer.email, name=customer.name, pin=hashed_password)
+    return crud.create_customer(db=db,customer=db_user)
 
 # fetch all customers
 @app.get("/customers/", status_code=status.HTTP_200_OK, response_model=list[schemas.Customer])

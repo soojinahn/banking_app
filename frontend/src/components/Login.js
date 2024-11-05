@@ -26,23 +26,27 @@ export default function Login({ setToken }) {
         if (!validateForm()) return;
         setLoading(true);
 
+        const formDetails = new URLSearchParams();
+        formDetails.append('username', email);
+        formDetails.append('password', PIN);
+
         try {
-            const response = await fetch('http://localhost:8000/login', {
+            const response = await fetch(`http://localhost:8000/token`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ email: email, pin: PIN })
+                body: formDetails,
         });
 
         setLoading(false);
         
         if (response.ok) {
             const data = await response.json();
-            console.log(data.token, "this is from data.token");
-            localStorage.setItem('token', data.token);
-            setToken(data.token);
-            setId(data.id);
+            console.log(data.access_token, "this is from data.token");
+            localStorage.setItem('token', data.access_token);
+            setToken(data.access_token);
+            setId(data.customer_id);
             setLogIn(true);
         } else{
             const errorData = await response.json();

@@ -19,11 +19,12 @@ class Account(AccountBase):
 class CustomerBase(BaseModel):
     email: str
     name: str
-    pin: str
 
 
 class CustomerCreate(CustomerBase):
-    pass 
+    email: str
+    name: str
+    pin: str
 
 
 class Customer(CustomerBase):
@@ -37,3 +38,13 @@ class Customer(CustomerBase):
 class LoginBase(BaseModel):
     email: str
     pin: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: str | None = None
+
+class UserInDB(CustomerBase):
+    hashed_password: str

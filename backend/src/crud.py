@@ -5,7 +5,7 @@ from . import models,schemas
 def create_customer(db: Session, customer:schemas.CustomerCreate):
     db_user = models.Customer(email=customer.email,
                           name=customer.name,
-                          pin=customer.pin)
+                          hashed_pin=customer.pin)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
