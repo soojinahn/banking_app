@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from . import models,schemas
 
 def create_customer(db: Session, customer:schemas.CustomerCreate):
@@ -45,8 +44,16 @@ def get_account_by_id(db:Session, customer_id:int, account_id:int):
     return db.query(models.Account).filter(models.Account.owner_id == customer_id, models.Account.id == account_id).first()
 
 
-def update_account_by_id(db: Session, account:schemas.Account, balance:float):
+def update_account_by_id(db:Session, account:schemas.Account, balance:float):
     account.balance = balance
     db.commit()
     db.refresh(account)
     return account
+
+
+def delete_customer_by_id(db:Session, customer_id:int):
+    customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+    db.delete(customer)
+    db.commit()
+    return customer
+    
