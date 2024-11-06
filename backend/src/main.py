@@ -30,8 +30,8 @@ async def verify_user_token(token: str):
     auth.verify_token(token=token)
     return {"message": "Token is valid"}
 
-# login request and  
-@app.post("/token", status_code=status.HTTP_200_OK)
+# login request and token generation
+@app.post("/login", status_code=status.HTTP_200_OK)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get_db)):
     customer = auth.authenticate_customer(form_data.username, form_data.password, db)
     if not customer:
